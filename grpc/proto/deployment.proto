@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package k8s;
+
+service Deployment {
+    rpc GetByLabels (DeploymentRequest) returns (DeploymentResponse) {
+    }
+}
+
+message DeploymentRequest {
+    string cluster = 1;
+    string namespace = 2;
+    string productId = 3;
+    string name = 4;
+    string labels = 5;
+}
+
+message DeploymentResponse {
+    bytes data = 1;
+}

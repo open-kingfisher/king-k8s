@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package k8s;
+
+service Service {
+    rpc Get (ServiceRequest) returns (ServiceResponse) {
+    }
+}
+
+message ServiceRequest {
+    string cluster = 1;
+    string namespace = 2;
+    string productId = 3;
+    string name = 4;
+}
+
+message ServiceResponse {
+    bytes data = 1;
+}
