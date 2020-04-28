@@ -6,6 +6,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/open-kingfisher/king-utils/common"
+	"github.com/open-kingfisher/king-utils/common/handle"
+	"github.com/open-kingfisher/king-utils/common/log"
+	"github.com/open-kingfisher/king-utils/db"
+	"github.com/open-kingfisher/king-utils/kit"
 	appv1 "k8s.io/api/apps/v1"
 	"k8s.io/api/core/v1"
 	policy "k8s.io/api/policy/v1beta1"
@@ -14,12 +19,6 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 	watchType "k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/tools/watch"
-	"k8s.io/kubernetes/pkg/client/conditions"
-	"github.com/open-kingfisher/king-utils/common"
-	"github.com/open-kingfisher/king-utils/common/handle"
-	"github.com/open-kingfisher/king-utils/common/log"
-	"github.com/open-kingfisher/king-utils/db"
-	"github.com/open-kingfisher/king-utils/kit"
 	"strings"
 	"time"
 )
@@ -252,7 +251,7 @@ func (r *PodResource) Debug() (interface{}, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 	// 读取watch items，直到达到满足的条件
-	_, err = watch.UntilWithoutRetry(ctx, watcher, conditions.PodRunning)
+	_, err = watch.UntilWithoutRetry(ctx, watcher, PodRunning)
 	if err != nil {
 		return nil, err
 	}
@@ -668,7 +667,7 @@ func (r *PodResource) Rescue() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 	// 读取watch items，直到达到满足的条件
-	_, err = watch.UntilWithoutRetry(ctx, watcher, conditions.PodRunning)
+	_, err = watch.UntilWithoutRetry(ctx, watcher, PodRunning)
 	if err != nil {
 		return err
 	}
@@ -794,4 +793,37 @@ func rescueCondition(conditions []string, condition string) bool {
 		}
 	}
 	return false
+}
+
+// k8s.io/kubernetes/pkg/client/conditions
+func PodRunning(event watchType.Event) (bool, error) {
+	switch event.Type {
+	case watchType.Deleted:
+		return false, fmt.Errorf("pod not find")
+	}
+	switch t := event.Object.(type) {
+	case *v1.Pod:
+		switch t.Status.Phase {
+		case v1.PodRunning:
+			return true, nil
+		case v1.PodFailed, v1.PodSucceeded:
+			return false, fmt.Errorf("pod ran to completion")
+		}
+	}
+	return false, nil
+}
+
+func PodCompleted(event watchType.Event) (bool, error) {
+	switch event.Type {
+	case watchType.Deleted:
+		return false, fmt.Errorf("pod not find")
+	}
+	switch t := event.Object.(type) {
+	case *v1.Pod:
+		switch t.Status.Phase {
+		case v1.PodFailed, v1.PodSucceeded:
+			return true, nil
+		}
+	}
+	return false, nil
 }
