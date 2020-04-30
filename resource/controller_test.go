@@ -2,10 +2,10 @@ package resource
 
 import (
 	"fmt"
-	"k8s.io/api/apps/v1"
 	"github.com/open-kingfisher/king-utils/common"
 	"github.com/open-kingfisher/king-utils/common/access"
 	"github.com/open-kingfisher/king-utils/common/handle"
+	"k8s.io/api/apps/v1"
 	"testing"
 )
 

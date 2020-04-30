@@ -1,11 +1,11 @@
 package resource
 
 import (
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"github.com/open-kingfisher/king-utils/common"
 	"github.com/open-kingfisher/king-utils/common/handle"
 	"github.com/open-kingfisher/king-utils/common/log"
 	"github.com/open-kingfisher/king-utils/db"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"strings"
 	"sync"
 )

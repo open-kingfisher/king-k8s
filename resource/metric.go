@@ -2,6 +2,7 @@ package resource
 
 import (
 	"errors"
+	"github.com/open-kingfisher/king-utils/common/handle"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -10,7 +11,6 @@ import (
 	"k8s.io/metrics/pkg/apis/metrics/v1beta1"
 	metrics "k8s.io/metrics/pkg/client/clientset/versioned"
 	customMetrics "k8s.io/metrics/pkg/client/custom_metrics"
-	"github.com/open-kingfisher/king-utils/common/handle"
 )
 
 type MetricResource struct {

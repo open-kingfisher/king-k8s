@@ -5,7 +5,6 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"golang.org/x/sync/errgroup"
 	"github.com/open-kingfisher/king-utils/common"
 	"github.com/open-kingfisher/king-utils/common/access"
 	"github.com/open-kingfisher/king-utils/common/handle"
@@ -14,6 +13,7 @@ import (
 	"github.com/open-kingfisher/king-utils/config"
 	"github.com/open-kingfisher/king-utils/db"
 	"github.com/open-kingfisher/king-utils/kit"
+	"golang.org/x/sync/errgroup"
 	"time"
 )
 

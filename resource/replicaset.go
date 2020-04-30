@@ -1,11 +1,11 @@
 package resource
 
 import (
+	"github.com/open-kingfisher/king-utils/common"
+	"github.com/open-kingfisher/king-utils/common/handle"
 	"k8s.io/api/apps/v1"
 	rbacv1beta1 "k8s.io/api/rbac/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"github.com/open-kingfisher/king-utils/common"
-	"github.com/open-kingfisher/king-utils/common/handle"
 )
 
 type ReplicaSetResource struct {
