@@ -1,6 +1,7 @@
 GOCMD=GOOS=linux go
 PROJECT=kingfisher
 SERVICE=king-k8s
+GRPC=king-k8s-grpc
 REGISTRY=registry.kingfisher.com.cn
 REVISION=latest
 
@@ -13,4 +14,4 @@ push:
 	docker push $(REGISTRY)/$(PROJECT)/$(SERVICE):$(REVISION)
 
 generate:
-	protoc -I$(GOPATH)/src/github.com/open-kingfisher/king-k8s/grpc/proto $(GOPATH)/src/github.com/open-kingfisher/king-k8s/grpc/proto/*.proto --go_out=plugins=grpc:$(GOPATH)/src/github.com/open-kingfisher/king-k8s/grpc/proto/
+	protoc -I./grpc/proto ./grpc/proto/*.proto --go_out=plugins=grpc:./grpc/proto/
