@@ -3,8 +3,8 @@
 #!/bin/sh
 [ "$DB_URL" ] || DB_URL='user:password@tcp(192.168.10.100:3306)/kingfisher'
 [ "$LISTEN" ] || LISTEN=0.0.0.0
-[ "$PORT" ] || LISTEN=8080
-[ "$RPCPORT" ] || LISTEN=50000
+[ "$PORT" ] || PORT=8080
+[ "$RPCPORT" ] || RPCPORT=50000
 [ "$RABBITMQ_URL" ] || RABBITMQ_URL='amqp://user:password@king-rabbitmq:5672/'
 
 mkdir /var/log/kingfisher
