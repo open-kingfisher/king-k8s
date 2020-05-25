@@ -1,6 +1,6 @@
 GOCMD=GOOS=linux go
 PROJECT=kingfisher
-SERVICE=king-istio
+SERVICE=king-k8s
 REGISTRY=registry.kingfisher.com.cn
 REVISION=latest
 
