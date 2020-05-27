@@ -1,6 +1,4 @@
 #!/bin/sh
-
-#!/bin/sh
 [ "$DB_URL" ] || DB_URL='user:password@tcp(192.168.10.100:3306)/kingfisher'
 [ "$LISTEN" ] || LISTEN=0.0.0.0
 [ "$PORT" ] || PORT=8080
