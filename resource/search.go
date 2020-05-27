@@ -99,19 +99,10 @@ func getProduct(cluster, namespace string) ([]string, error) {
 	for _, v := range products {
 		namespaceId, _ := getNamespaceId(cluster, namespace)
 		if sliceContain(cluster, v.Cluster) && sliceContain(namespaceId, v.Namespace) {
-			productName, _ := getProductName(v.Id)
-			product = append(product, productName)
+			product = append(product, v.Name)
 		}
 	}
 	return product, nil
-}
-
-func getProductName(productId string) (string, error) {
-	productTree := common.ProductTree{}
-	if err := db.GetById(common.ProductTreeTable, productId, &productTree); err != nil {
-		return "", err
-	}
-	return productTree.Name, nil
 }
 
 func getNamespaceId(clusterId, namespaceName string) (string, error) {
