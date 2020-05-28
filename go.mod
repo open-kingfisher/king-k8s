@@ -7,7 +7,7 @@ require (
 	github.com/docker/docker v0.0.0-00010101000000-000000000000
 	github.com/gin-gonic/gin v1.6.2
 	github.com/golang/protobuf v1.4.0
-	github.com/open-kingfisher/king-utils v0.0.0-20200526073742-a2d1d095795b
+	github.com/open-kingfisher/king-utils v0.0.0-20200527102031-7d2f89d2993d
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.5.1
 	golang.org/x/net v0.0.0-20200425230154-ff2c4b7c35a0
