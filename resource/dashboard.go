@@ -5,6 +5,7 @@ import (
 	"github.com/open-kingfisher/king-utils/common/handle"
 	"github.com/open-kingfisher/king-utils/common/log"
 	"github.com/open-kingfisher/king-utils/db"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"strings"
 	"sync"
@@ -212,4 +213,34 @@ func (r *DashboardResource) ListHistory() ([]*common.AuditLog, error) {
 	} else {
 		return audit, nil
 	}
+}
+
+func (r *DashboardResource) ListPodStatus() ([]map[string]interface{}, error) {
+	pending, running, succeeded, failed, unknown := 0, 0, 0, 0, 0
+	if pods, err := r.Params.ClientSet.CoreV1().Pods(r.Params.Namespace).List(metav1.ListOptions{}); err != nil {
+		return nil, err
+	} else {
+		for _, pod := range pods.Items {
+			switch pod.Status.Phase {
+			case corev1.PodPending:
+				pending += 1
+			case corev1.PodRunning:
+				running += 1
+			case corev1.PodSucceeded:
+				succeeded += 1
+			case corev1.PodFailed:
+				failed += 1
+			case corev1.PodUnknown:
+				unknown += 1
+			}
+		}
+	}
+	podStatus := []map[string]interface{}{
+		{"value": pending, "name": corev1.PodPending},
+		{"value": running, "name": corev1.PodRunning},
+		{"value": succeeded, "name": corev1.PodSucceeded},
+		{"value": failed, "name": corev1.PodFailed},
+		{"value": unknown, "name": corev1.PodUnknown},
+	}
+	return podStatus, nil
 }

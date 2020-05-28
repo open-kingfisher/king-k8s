@@ -25,6 +25,11 @@ func ListHistory(c *gin.Context) {
 	c.JSON(responseData.Code, responseData)
 }
 
+func ListPodStatus(c *gin.Context) {
+	responseData := HandleDashboard("PodStatus", c)
+	c.JSON(responseData.Code, responseData)
+}
+
 func HandleDashboard(action string, c *gin.Context) (responseData *common.ResponseData) {
 	// 获取clientSet，如果失败直接返回错误
 	clientSet, err := access.Access(c.Query("cluster"))
@@ -46,6 +51,9 @@ func HandleDashboard(action string, c *gin.Context) (responseData *common.Respon
 		responseData = handle.HandlerResponse(response, err)
 	case "History":
 		response, err := r.ListHistory()
+		responseData = handle.HandlerResponse(response, err)
+	case "PodStatus":
+		response, err := r.ListPodStatus()
 		responseData = handle.HandlerResponse(response, err)
 	}
 	return

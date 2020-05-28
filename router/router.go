@@ -220,6 +220,7 @@ func SetupRouter(r *gin.Engine) *gin.Engine {
 		authorize.GET(common.K8SPath+"dashboard/infocard", impl.ListInfoCard)
 		authorize.GET(common.K8SPath+"dashboard/application", impl.ListApplication)
 		authorize.GET(common.K8SPath+"dashboard/history", impl.ListHistory)
+		authorize.GET(common.K8SPath+"dashboard/podStatus", impl.ListPodStatus)
 
 		// Ping test
 		authorize.GET("/ping", impl.Ping)
