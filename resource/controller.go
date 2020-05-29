@@ -11,6 +11,7 @@ import (
 	"github.com/open-kingfisher/king-utils/common/handle"
 	"github.com/open-kingfisher/king-utils/common/log"
 	"github.com/open-kingfisher/king-utils/kit"
+	"io/ioutil"
 	"k8s.io/api/apps/v1"
 	autoscalingv1 "k8s.io/api/autoscaling/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -1105,17 +1106,22 @@ func (r *ControllerResource) GenerateCreateData(c *gin.Context) (err error) {
 		}
 	case "json":
 		// 为了获取kind信息
-		jsons := make([]byte, c.Request.ContentLength)
-		if _, err = c.Request.Body.Read(jsons); err != nil {
-			if err.Error() != "EOF" {
-				return
-			}
-		}
-		if j, kind, err := kit.JsonToJson(jsons); err != nil {
+		//jsons := make([]byte, c.Request.ContentLength)
+		//if _, err = c.Request.Body.Read(jsons); err != nil {
+		//	if err.Error() != "EOF" {
+		//		return
+		//	}
+		//}
+		// https://github.com/gin-gonic/gin/issues/2374
+		if jsons, err := ioutil.ReadAll(c.Request.Body); err != nil {
 			return err
 		} else {
-			kindType = kind
-			jsonByte = j
+			if j, kind, err := kit.JsonToJson(jsons); err != nil {
+				return err
+			} else {
+				kindType = kind
+				jsonByte = j
+			}
 		}
 	default:
 		return errors.New(common.ContentTypeError)
