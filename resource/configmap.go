@@ -2,12 +2,10 @@ package resource
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/open-kingfisher/king-utils/common"
 	"github.com/open-kingfisher/king-utils/common/handle"
 	"github.com/open-kingfisher/king-utils/common/log"
-	"github.com/open-kingfisher/king-utils/kit"
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -100,25 +98,60 @@ func (r *ConfigMapResource) Create() (res *v1.ConfigMap, err error) {
 }
 
 func (r *ConfigMapResource) GenerateCreateData(c *gin.Context) (err error) {
-	switch r.Params.DataType {
-	case "yaml":
-		var j []byte
-		create := common.PostType{}
-		if err = c.BindJSON(&create); err != nil {
-			return
-		}
-		if j, _, err = kit.YamlToJson(create.Context); err != nil {
-			return
-		}
-		if err = json.Unmarshal(j, &r.PostData); err != nil {
-			return
-		}
-	case "json":
-		if err = c.BindJSON(&r.PostData); err != nil {
-			return
-		}
-	default:
-		return errors.New(common.ContentTypeError)
+	data := make(map[string]string)
+	// 获取KV值
+	kv := c.PostForm("kv")
+	if err = json.Unmarshal([]byte(kv), &data); err != nil {
+		return
 	}
+	// 获取文件名
+	fileName := c.PostForm("fileName")
+	fileNameList := make([]string, 0)
+	if err = json.Unmarshal([]byte(fileName), &fileNameList); err != nil {
+		return
+	}
+	// 通过文件名获取文件内容，存储到data中
+	for _, fileName := range fileNameList {
+		if file, err := c.FormFile(fileName); err != nil {
+			return err
+		} else {
+			f, _ := file.Open()
+			// 根据上传文件大小初始化buf
+			buf := make([]byte, file.Size)
+			for {
+				l, _ := f.Read(buf)
+				if l == 0 {
+					break
+				}
+			}
+			data[fileName] = string(buf)
+		}
+	}
+	r.PostData = &v1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: c.Query("name"),
+		},
+		Data: data,
+	}
+	//switch r.Params.DataType {
+	//case "yaml":
+	//	var j []byte
+	//	create := common.PostType{}
+	//	if err = c.BindJSON(&create); err != nil {
+	//		return
+	//	}
+	//	if j, _, err = kit.YamlToJson(create.Context); err != nil {
+	//		return
+	//	}
+	//	if err = json.Unmarshal(j, &r.PostData); err != nil {
+	//		return
+	//	}
+	//case "json":
+	//	if err = c.BindJSON(&r.PostData); err != nil {
+	//		return
+	//	}
+	//default:
+	//	return errors.New(common.ContentTypeError)
+	//}
 	return nil
 }

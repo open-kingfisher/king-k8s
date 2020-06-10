@@ -75,7 +75,7 @@ func HandleConfigMap(action common.ActionType, c *gin.Context) (responseData *co
 			responseData = handle.HandlerResponse(nil, err)
 		}
 	case common.Update:
-		if err := c.BindJSON(&r.PostData); err == nil {
+		if err := r.GenerateCreateData(c); err == nil {
 			response, err := r.Update()
 			responseData = handle.HandlerResponse(response, err)
 		} else {
