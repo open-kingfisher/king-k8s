@@ -247,6 +247,14 @@ func SetupRouter(r *gin.Engine) *gin.Engine {
 
 		// search pod ip
 		authorize.GET(common.K8SPath+"search/podip/:name", impl.GetSearch)
+
+		// endpoint
+		authorize.GET(common.K8SPath+"endpoint", impl.ListEndpoint)
+		authorize.GET(common.K8SPath+"endpoint/:name", impl.GetEndpoint)
+		authorize.DELETE(common.K8SPath+"endpoint/:name", impl.DeleteEndpoint)
+		authorize.PATCH(common.K8SPath+"endpoint/patch/:name", impl.PatchEndpoint)
+		authorize.POST(common.K8SPath+"endpoint", impl.CreateEndpoint)
+		authorize.PUT(common.K8SPath+"endpoint", impl.UpdateEndpoint)
 	}
 	return r
 }
