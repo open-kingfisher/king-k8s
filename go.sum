@@ -192,6 +192,8 @@ github.com/open-kingfisher/king-utils v0.0.0-20200527102031-7d2f89d2993d h1:fAY1
 github.com/open-kingfisher/king-utils v0.0.0-20200527102031-7d2f89d2993d/go.mod h1:KNrlO5Fk5fs5G5nq14/W2ANlx6mmXFpbuRPJGC2ytwY=
 github.com/open-kingfisher/king-utils v0.0.0-20200612015840-ec5b41b92ed5 h1:eBnqjpX9W00STkE2c19VEeO1NJ07edwkx63UuPbCd4k=
 github.com/open-kingfisher/king-utils v0.0.0-20200612015840-ec5b41b92ed5/go.mod h1:KNrlO5Fk5fs5G5nq14/W2ANlx6mmXFpbuRPJGC2ytwY=
+github.com/open-kingfisher/king-utils v0.0.0-20200616035823-865ef4f758a3 h1:uzLuuBQptbO6DUR/S4l14SZsNL38g10bCCUsfx6NliE=
+github.com/open-kingfisher/king-utils v0.0.0-20200616035823-865ef4f758a3/go.mod h1:KNrlO5Fk5fs5G5nq14/W2ANlx6mmXFpbuRPJGC2ytwY=
 github.com/peterbourgon/diskv v2.0.1+incompatible/go.mod h1:uqqh8zWWbv1HBMNONnaR/tNboyR3/BZd58JJSHlUSCU=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
