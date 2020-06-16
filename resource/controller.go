@@ -1407,3 +1407,31 @@ func (r *ControllerResource) GetNamespaceIsExistLabel() (bool, error) {
 	}
 	return false, nil
 }
+
+func (r *ControllerResource) Restart() error {
+	time := time.Now().Format("2006/1/2 15:04:05")
+	r.Params.PatchData = &common.PatchJson{
+		Patches: []common.PatchData{
+			{
+				Op:    "add",
+				Path:  "/spec/template/metadata/annotations/kingfisher.io~1restartedAt",
+				Value: time,
+			},
+		},
+	}
+	if _, err := r.Patch(); err != nil {
+		r.Params.PatchData = &common.PatchJson{
+			Patches: []common.PatchData{
+				{
+					Op:    "add",
+					Path:  "/spec/template/metadata/annotations",
+					Value: map[string]string{"kingfisher.io/restartedAt": time},
+				},
+			},
+		}
+		if _, err := r.Patch(); err != nil {
+			return err
+		}
+	}
+	return nil
+}

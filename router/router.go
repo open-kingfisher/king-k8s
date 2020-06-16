@@ -85,6 +85,7 @@ func SetupRouter(r *gin.Engine) *gin.Engine {
 		authorize.GET(common.K8SPath+"listPodByController/:controller/:name", impl.ListPodByController)
 		authorize.DELETE(common.K8SPath+"controller/:controller/:name", impl.DeleteController)
 		authorize.PATCH(common.K8SPath+"controller/:controller/patch/:name", impl.PatchController)
+		authorize.PATCH(common.K8SPath+"controller/:controller/restart/:name", impl.RestartController)
 		// 使用分步滚动更新的时候使用此接口
 		authorize.PATCH(common.K8SPath+"controller/:controller/patchSync/:name", impl.UpdatePatchSyncImageController)
 		authorize.PATCH(common.K8SPath+"controller/:controller/rolling/:name", impl.UpdatePatchImageController)

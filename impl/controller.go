@@ -96,6 +96,11 @@ func GetNamespaceIsExistLabel(c *gin.Context) {
 	c.JSON(http.StatusOK, responseData)
 }
 
+func RestartController(c *gin.Context) {
+	responseData := HandleController(common.Restart, c)
+	c.JSON(http.StatusOK, responseData)
+}
+
 func HandleController(action common.ActionType, c *gin.Context) (responseData *common.ResponseData) {
 	// 获取clientSet，如果失败直接返回错误
 	clientSet, err := access.Access(c.Query("cluster"))
@@ -155,6 +160,9 @@ func HandleController(action common.ActionType, c *gin.Context) (responseData *c
 		} else {
 			responseData = handle.HandlerResponse(nil, err)
 		}
+	case common.Restart:
+		err := r.Restart()
+		responseData = handle.HandlerResponse(nil, err)
 	case common.PatchStepResume:
 		r.Params.PatchData = &common.PatchJson{}
 		response, err := r.PatchStepResume()
