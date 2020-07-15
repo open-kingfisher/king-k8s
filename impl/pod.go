@@ -73,6 +73,16 @@ func GetDebugPodIPByPod(c *gin.Context) {
 	c.JSON(responseData.Code, responseData)
 }
 
+func OfflinePod(c *gin.Context) {
+	responseData := HandlePod(common.Offline, c)
+	c.JSON(responseData.Code, responseData)
+}
+
+func OnlinePod(c *gin.Context) {
+	responseData := HandlePod(common.Online, c)
+	c.JSON(responseData.Code, responseData)
+}
+
 func HandlePod(action common.ActionType, c *gin.Context) (responseData *common.ResponseData) {
 	// 获取clientSet，如果失败直接返回错误
 	clientSet, err := access.Access(c.Query("cluster"))
@@ -126,6 +136,12 @@ func HandlePod(action common.ActionType, c *gin.Context) (responseData *common.R
 	case common.Evict:
 		err := r.Evict()
 		responseData = handle.HandlerResponse(nil, err)
+	case common.Offline:
+		response, err := r.Offline()
+		responseData = handle.HandlerResponse(response, err)
+	case common.Online:
+		response, err := r.Online()
+		responseData = handle.HandlerResponse(response, err)
 	case common.Debug:
 		var image, debugImage string
 		if c.Query("image") == "" {
