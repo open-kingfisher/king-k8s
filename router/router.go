@@ -53,6 +53,8 @@ func SetupRouter(r *gin.Engine) *gin.Engine {
 		authorize.GET(common.K8SPath+"kubectl/install", impl.KubectlPod)
 		authorize.GET(common.K8SPath+"kubectl/uninstall", impl.UnKubectlPod)
 		authorize.GET(common.K8SPath+"debug/podIP/:name", impl.GetDebugPodIPByPod)
+		authorize.PATCH(common.K8SPath+"pod/offline/:name", impl.OfflinePod)
+		authorize.PATCH(common.K8SPath+"pod/online/:name", impl.OnlinePod)
 
 		// service
 		authorize.GET(common.K8SPath+"service", impl.ListService)

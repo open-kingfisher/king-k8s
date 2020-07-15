@@ -258,6 +258,70 @@ func (r *PodResource) Debug() (interface{}, error) {
 	return r.Params.ClientSet.CoreV1().Pods(r.Params.Namespace).Get(pod.Name, metav1.GetOptions{})
 }
 
+func (r *PodResource) Offline() (res *v1.Pod, err error) {
+	pod, err := r.Get()
+	if err != nil {
+		log.Errorf("Pod get error:%s; Json:%+v; Name:%s", err, pod, r.PostData.Name)
+		return
+	}
+	offlineLabels := make(map[string]string)
+	for k, v := range pod.Labels {
+		if k == "pod-template-hash" {
+			offlineLabels[k] = v
+		} else {
+			offlineLabels[k] = v + "-kingfisher-offline"
+		}
+	}
+	pod.Labels = offlineLabels
+	if res, err = r.Params.ClientSet.CoreV1().Pods(r.Params.Namespace).Update(pod); err != nil {
+		log.Errorf("Pod offline error:%s; Json:%+v; Name:%s", err, pod, r.PostData.Name)
+		return
+	}
+	auditLog := handle.AuditLog{
+		Kind:       common.Pod,
+		ActionType: common.Offline,
+		Resources:  r.Params,
+		Name:       pod.Name,
+		PostData:   pod,
+	}
+	if err = auditLog.InsertAuditLog(); err != nil {
+		return
+	}
+	return
+}
+
+func (r *PodResource) Online() (res *v1.Pod, err error) {
+	pod, err := r.Get()
+	if err != nil {
+		log.Errorf("Pod get error:%s; Json:%+v; Name:%s", err, pod, r.PostData.Name)
+		return
+	}
+	offlineLabels := make(map[string]string)
+	for k, v := range pod.Labels {
+		if k == "pod-template-hash" {
+			offlineLabels[k] = v
+		} else {
+			offlineLabels[k] = strings.Split(v, "-kingfisher-offline")[0]
+		}
+	}
+	pod.Labels = offlineLabels
+	if res, err = r.Params.ClientSet.CoreV1().Pods(r.Params.Namespace).Update(pod); err != nil {
+		log.Errorf("Pod online error:%s; Json:%+v; Name:%s", err, pod, r.PostData.Name)
+		return
+	}
+	auditLog := handle.AuditLog{
+		Kind:       common.Pod,
+		ActionType: common.Online,
+		Resources:  r.Params,
+		Name:       pod.Name,
+		PostData:   pod,
+	}
+	if err = auditLog.InsertAuditLog(); err != nil {
+		return
+	}
+	return
+}
+
 func (r *PodResource) getContainerIDAndNode() (map[string]string, error) {
 	if pod, err := r.Get(); err != nil {
 		return nil, err
