@@ -46,6 +46,11 @@ func GetIngressChart(c *gin.Context) {
 	c.JSON(responseData.Code, responseData)
 }
 
+func GetIngressByDeployment(c *gin.Context) {
+	responseData := HandleIngress("IngressByDeployment", c)
+	c.JSON(responseData.Code, responseData)
+}
+
 func HandleIngress(action common.ActionType, c *gin.Context) (responseData *common.ResponseData) {
 	// 获取clientSet，如果失败直接返回错误
 	clientSet, err := access.Access(c.Query("cluster"))
@@ -99,6 +104,9 @@ func HandleIngress(action common.ActionType, c *gin.Context) (responseData *comm
 		}
 	case common.GetChart:
 		response, err := r.GetChart()
+		responseData = handle.HandlerResponse(response, err)
+	case "IngressByDeployment":
+		response, err := r.GetIngressByDeployment()
 		responseData = handle.HandlerResponse(response, err)
 	}
 	return

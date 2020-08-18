@@ -136,6 +136,7 @@ func SetupRouter(r *gin.Engine) *gin.Engine {
 		authorize.PATCH(common.K8SPath+"ingress/patch/:name", impl.PatchIngress)
 		authorize.POST(common.K8SPath+"ingress", impl.CreateIngress)
 		authorize.PUT(common.K8SPath+"ingress", impl.UpdateIngress)
+		authorize.GET(common.K8SPath+"ingressByDeployment/:name", impl.GetIngressByDeployment)
 
 		// role
 		authorize.GET(common.K8SPath+"role", impl.ListRole)

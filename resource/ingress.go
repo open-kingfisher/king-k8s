@@ -189,6 +189,68 @@ func (r *IngressResource) GetChart() (interface{}, error) {
 	return &chartData, nil
 }
 
+func (r *IngressResource) GetIngressByDeployment() (string, error) {
+	i, err := r.Params.ClientSet.ExtensionsV1beta1().Ingresses(r.Params.Namespace).List(metav1.ListOptions{})
+	if err != nil {
+		return "", err
+	}
+	ingressName := ""
+	for _, ingress := range i.Items {
+		for _, rules := range ingress.Spec.Rules {
+			if rules.HTTP != nil && len(rules.HTTP.Paths) > 0 {
+				for _, host := range rules.HTTP.Paths {
+					serviceName, _ := r.GetServiceNameByDeploymentName()
+					if host.Backend.ServiceName == serviceName {
+						ingressName = ingress.Name
+						goto End
+					}
+				}
+			}
+		}
+	}
+End:
+	return ingressName, err
+}
+
+func (r *IngressResource) GetService(serviceName string) (map[string]string, error) {
+	s, err := r.Params.ClientSet.CoreV1().Services(r.Params.Namespace).Get(serviceName, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+	return s.Spec.Selector, nil
+}
+
+func (r *IngressResource) GetServiceNameByDeploymentName() (string, error) {
+	d, err := r.Params.ClientSet.AppsV1().Deployments(r.Params.Namespace).Get(r.Params.Name, metav1.GetOptions{})
+	if err != nil {
+		return "", err
+	}
+	s, err := r.Params.ClientSet.CoreV1().Services(r.Params.Namespace).List(metav1.ListOptions{})
+	if err != nil {
+		return "", err
+	}
+	serviceName := ""
+	for _, service := range s.Items {
+		tmp := true
+		if service.Spec.Selector != nil {
+			for key, value := range service.Spec.Selector {
+				if d.Spec.Selector.MatchLabels[key] != value {
+					tmp = false
+					break
+				}
+			}
+		} else {
+			tmp = false
+			continue
+		}
+		if tmp {
+			serviceName = service.Name
+			break
+		}
+	}
+	return serviceName, nil
+}
+
 func (r *IngressResource) GenerateCreateData(c *gin.Context) (err error) {
 	switch r.Params.DataType {
 	case "yaml":
